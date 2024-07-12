@@ -1,0 +1,62 @@
+Perform the following operations using Python on the given data sets 
+a)Importing the libraries 
+b) Importing the Dataset 
+c) Handling of Missing Data 
+d) Handling of Categorical Data 
+e) Splitting the dataset into training and testing datasets 
+f) Feature Scaling 
+Region  Age  Income  Online Shopper 
+India 49 86400 No 
+Brazil   32 57600  Yes 
+USA  35 64800  No 
+Brazil  43  73200  No 
+USA  45   Yes 
+India  40  69600  Yes 
+Brazil   62400  No 
+India  53  94800  Yes 
+USA  55  99600  No 
+India  42  80400  Yes
+
+
+a)
+import pandas as pd
+from sklearn.model_selection import train_test_split
+b)
+dataset = pd.read_csv("given_data.csv")
+c)
+missing_values = dataset.isnull().sum() #check if any
+
+#also can be done using SimpleImputer of sci-kit library 
+
+dataset["Age"].fillna(dataset["Age"].mean(), inplace=True)
+
+dataset["Income"].fillna(dataset["Income"].mean(), inplace=True)
+
+d)
+dataset["Region"].fillna(dataset["Region"].mode().iloc[0], inplace=True)
+
+e)
+X = dataset.drop(columns=["Income"])  #independant variable
+y = dataset["Income"]  #dependant variable
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+#0. means 80% traning and 20% testing
+
+f)
+# Scale the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train a logistic regression model
+model = LogisticRegression()
+model.fit(X_train_scaled, y_train)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test_scaled)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy * 100:.2f}%')
+
