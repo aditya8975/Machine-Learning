@@ -21,6 +21,8 @@ India  42  80400  Yes
 a)
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 b)
 dataset = pd.read_csv("given_data.csv")
 c)
