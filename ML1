@@ -26,24 +26,46 @@ from sklearn.metrics import accuracy_score
 b)
 dataset = pd.read_csv("given_data.csv")
 c)
-missing_values = dataset.isnull().sum() #check if any
+print(dataset.isnull())
+print(dataset.isnull().sum()) #check if any
 
 #also can be done using SimpleImputer of sci-kit library 
 
 dataset["Age"].fillna(dataset["Age"].mean(), inplace=True)
 
 dataset["Income"].fillna(dataset["Income"].mean(), inplace=True)
-
-d)
 dataset["Region"].fillna(dataset["Region"].mode().iloc[0], inplace=True)
+print(dataset.isnull().sum())
+d)
+categorical_columns=dataset.select_dtype(include=[np.number]).columns
+print(categorial_columns)
 
+imputer=SimpleImputer(strategy='most_frequent')
+data[categorical_columns]=imputer.fit_transform(data[categorical_columns])
+print(dataset.isnull().sum())
+
+
+
+#oneHotEncoder
+encoder=OneHotEncoder(sparse_output=False,drop='first')
+encoder_data=encoder.fit_transform(data[categorical_columns])
+
+encoder_columns=encoder.get_feature_names_out(categorical_columns)
+
+data=data.drop(categorical_columns,axis=1)
+data=pd.concat([data,pd.DataFrame(encode_data,columns=encoded_columns)},axis=1)
 e)
-X = dataset.drop(columns=["Income"])  #independant variable
-y = dataset["Income"]  #dependant variable
+x=data.drop('Online Shopper',axis=1)
+y=data['Online Shopper'] #dependant variable
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-#0. means 80% traning and 20% testing
+
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2,random_state=42)
+
+print("Traning set shape :",x_train.shape,y_train.shape)
+print("Testing set shape :",x_test.shape,y_test.shape)
+
 
 f)
 # Scale the features
