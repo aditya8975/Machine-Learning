@@ -1,0 +1,136 @@
+
+
+import pandas as pd
+import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, precision_score
+from sklearn.metrics import classification_report
+import matplotlib.pyplot as plt
+df=pd.read_csv(r'C:\Users\user\Desktop\26_ML\emails.csv')
+print(df.shape)
+
+print(df.head())
+
+#input data
+x = df.drop(['Email No.','Prediction'], axis =1)
+print(x.shape)
+
+y = df['Prediction']
+print(y.shape)
+
+#checking balance of spam and not spam
+print(y.value_counts())
+
+#Feature Scaling
+scaler = MinMaxScaler()
+x_scaled = scaler.fit_transform(x)
+print(x_scaled)
+
+
+#Cross validation
+x_train, x_test, y_train, y_test = train_test_split(x_scaled,y,random_state = 0, test_size = 0.25)
+print(x_scaled.shape)
+print(x_train.shape)
+print(x_test.shape)
+
+#create the object
+knn = KNeighborsClassifier(n_neighbors=5)
+
+#Train the algorithm
+knn.fit(x_train,y_train)
+
+#predict on test data
+y_pred = knn.predict(x_test)
+cm_display = ConfusionMatrixDisplay.from_predictions(y_test,y_pred)
+print(y_test.value_counts())
+
+#print accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy * 100:.2f}%")
+
+#print precision
+precision = precision_score(y_test, y_pred)
+print(f"Precision: {precision * 100:.2f}%")
+
+#print accuracy and precision
+a = classification_report(y_test, y_pred)
+print("report is : ", a)
+plt.show()
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, precision_score
+
+# Load the dataset
+df = pd.read_csv('emails.csv')  # Adjust the path if needed
+
+# Print column names to identify the correct target column
+print("Columns in the dataset:", df.columns)
+
+# Use the correct column name for labels
+target_column = 'Prediction'  # Update this to the actual column name in your dataset
+
+# Check if the target column exists
+if target_column not in df.columns:
+    raise ValueError(f"Target column '{target_column}' not found in the DataFrame. Available columns are: {df.columns}")
+
+# Convert labels to binary values
+df[target_column] = df[target_column].map({'spam': 1, 'ham': 0})
+
+# Drop rows with missing target values
+df = df.dropna(subset=[target_column])
+
+# Separate features and target variable
+X = df.drop(target_column, axis=1)
+y = df[target_column]
+
+# Check for and handle missing values in features
+if X.isnull().sum().sum() > 0:
+    print("Missing values found in features. Filling with mean values.")
+    X = X.fillna(X.mean())
+
+# Print shape of X and y before converting categorical variables
+print(f"Shape of X before conversion: {X.shape}")
+
+# Convert categorical features to numeric
+X = pd.get_dummies(X)
+
+# Print shape of X after converting categorical variables
+print(f"Shape of X after conversion: {X.shape}")
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Check the shapes of the train and test sets
+print(f"Shape of X_train: {X_train.shape}")
+print(f"Shape of X_test: {X_test.shape}")
+print(f"Shape of y_train: {y_train.shape}")
+print(f"Shape of y_test: {y_test.shape}")
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Initialize and train the KNN classifier
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train_scaled, y_train)
+
+# Make predictions
+y_pred = knn.predict(X_test_scaled)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy:.2f}")
+print(f"Precision: {precision:.2f}")
+
