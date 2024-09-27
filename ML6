@@ -1,0 +1,129 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score,classification_report, confusion_matrix 
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+import matplotlib.pyplot as plt
+
+
+data = pd.read_csv('PlayTennis.csv')
+print("Dataset:")
+print(data)
+print("\n")
+
+
+le = LabelEncoder()
+data['Outlook'] = le.fit_transform(data['Outlook'])
+data['Temperature'] = le.fit_transform(data['Temperature'])
+data['Humidity'] = le.fit_transform(data['Humidity'])
+data['Wind'] = le.fit_transform(data['Wind'])
+data['Play Tennis'] = le.fit_transform(data['Play Tennis'])
+
+print("--------Independent Variables--------")
+
+X=data.iloc[:, : -1]            
+print(X)
+print("\n")
+
+print("---------Dependent Variables---------")
+Y = data['Play Tennis']                       
+print(Y)
+print("\n")
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=42)
+
+# Standardize features 
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test= scaler.transform(X_test)
+#print("**************",X_test)
+
+# Gaussian Naive Bayes classifier
+guassian_classifier = GaussianNB()
+guassian_classifier.fit(X_train, y_train)
+
+# Predictions on test dataset
+y_pred = guassian_classifier.predict(X_test)
+print("Classfication report")
+print(classification_report(y_test, y_pred))
+print("\n")
+
+print("\n")
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)*100
+print("Accuracy:",accuracy,"%")
+
+# Calculate precision
+precision = precision_score(y_test, y_pred)*100
+print("Precision:", precision, "%")
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Problem Statement-Implement Naïve Bayes Classifier on Tennisdata Data set. Evaluate the classifier's performance.
+
+Code:
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score,classification_report, confusion_matrix 
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+import matplotlib.pyplot as plt
+
+
+data = pd.read_csv('PlayTennis.csv')
+print("Dataset:")
+print(data)
+print("\n")
+
+
+le = LabelEncoder()
+data['Outlook'] = le.fit_transform(data['Outlook'])
+data['Temperature'] = le.fit_transform(data['Temperature'])
+data['Humidity'] = le.fit_transform(data['Humidity'])
+data['Wind'] = le.fit_transform(data['Wind'])
+data['Play Tennis'] = le.fit_transform(data['Play Tennis'])
+
+print("--------Independent Variables--------")
+
+X=data.iloc[:, : -1]            
+print(X)
+print("\n")
+
+print("---------Dependent Variables---------")
+Y = data['Play Tennis']                       
+print(Y)
+print("\n")
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=42)
+
+# Standardize features 
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test= scaler.transform(X_test)
+#print("**************",X_test)
+
+# Gaussian Naive Bayes classifier
+guassian_classifier = GaussianNB()
+guassian_classifier.fit(X_train, y_train)
+
+# Predictions on test dataset
+y_pred = guassian_classifier.predict(X_test)
+print("Classfication report")
+print(classification_report(y_test, y_pred))
+print("\n")
+
+print("\n")
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)*100
+print("Accuracy:",accuracy,"%")
+
+# Calculate precision
+precision = precision_score(y_test, y_pred)*100
+print("Precision:", precision, "%")
+
