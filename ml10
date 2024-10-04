@@ -1,0 +1,70 @@
+import pandas as pd
+from mlxtend.frequent_patterns import apriori, association_rules
+
+# Sample dataset in the format of transactions
+data = {'TransactionID': [1, 2, 3, 4],
+        'Items': [['Milk', 'Bread', 'Butter'],
+                  ['Beer', 'Diapers', 'Bread'],
+                  ['Milk', 'Bread', 'Butter', 'Beer'],
+                  ['Diapers', 'Milk', 'Bread']]}
+
+df = pd.DataFrame(data)
+
+# One hot encoding (each item is represented as a binary value in the transaction)
+encoded_data = df['Items'].str.join('|').str.get_dummies()
+
+# Convert the one-hot encoded DataFrame to boolean type to avoid the warning
+encoded_data = encoded_data.astype(bool)
+
+# Apply Apriori algorithm with minimum support of 50%
+frequent_itemsets = apriori(encoded_data, min_support=0.5, use_colnames=True)
+
+# Display frequent itemsets
+print("Frequent Itemsets:")
+print(frequent_itemsets)
+
+# Generate association rules with minimum confidence of 70%
+rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.7)
+
+# Display the association rules
+print("\nAssociation Rules:")
+print(rules)
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+import pandas as pd
+from mlxtend.frequent_patterns import apriori, association_rules
+
+# Load your dataset
+# Assuming a CSV file with 'TransactionID' and 'Items' columns where 'Items' is a list of items in each transaction
+df = pd.read_csv('market_basket.csv')  # Replace with your file path
+
+# Preview the dataset
+print("First few rows of the dataset:\n", df.head())
+
+# Perform One-Hot Encoding to convert transactions into a binary matrix
+# Assume 'Items' column contains a list of items purchased in each transaction
+encoded_data = df['Items'].str.join('|').str.get_dummies()
+
+# Convert the one-hot encoded DataFrame to boolean type
+encoded_data = encoded_data.astype(bool)
+
+# Apply the Apriori algorithm with a minimum support threshold
+frequent_itemsets = apriori(encoded_data, min_support=0.05, use_colnames=True)  # Adjust min_support as needed
+
+# Display frequent itemsets
+print("\nFrequent Itemsets:\n", frequent_itemsets)
+
+# Generate association rules with a confidence threshold
+rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.6)  # Adjust min_threshold as needed
+
+# Display association rules
+print("\nAssociation Rules:\n", rules)
+
+# Optional: Save the frequent itemsets and rules to CSV files for further analysis
+frequent_itemsets.to_csv('frequent_itemsets.csv', index=False)
+rules.to_csv('association_rules.csv', index=False)
+
+# Print summary
+print("\nFrequent itemsets and association rules have been saved to CSV files.")
