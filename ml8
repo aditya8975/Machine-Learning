@@ -1,0 +1,41 @@
+//pip install scikit-learn-extra
+
+
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn_extra.cluster import KMedoids
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.metrics import silhouette_score
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply K-Medoids clustering
+kmedoids = KMedoids(n_clusters=3, random_state=42, method='pam')
+kmedoids.fit(X_scaled)
+
+# Get the predicted clusters
+y_kmedoids = kmedoids.predict(X_scaled)
+
+# Evaluate clustering using Silhouette Score
+silhouette_avg = silhouette_score(X_scaled, y_kmedoids)
+print(f"Silhouette Score: {silhouette_avg:.2f}")
+
+# Visualize the clusters using PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y_kmedoids, cmap='viridis', s=50)
+plt.title('K-Medoids Clustering on Iris Dataset (PCA-reduced data)')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.show()
