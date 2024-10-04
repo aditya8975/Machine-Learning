@@ -1,3 +1,69 @@
+//on emails.csv
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+# Load the dataset
+data_frame = pd.read_csv('emails.csv')
+print("Dataset:\n", data_frame.head())  # Display the first few rows
+
+# Prepare features and labels
+data_frame['Prediction'] = data_frame['Prediction'].replace({0: 'spam', 1: 'ham'})  # Convert 0/1 to 'spam'/'ham'
+X = data_frame.iloc[:, 1:-1].values  # Features
+Y = np.where(data_frame['Prediction'] == 'spam', 1, 0)  # Labels
+
+# Split the dataset
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=90)
+
+# Scale features (optional but recommended for better performance in some algorithms)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Train Naive Bayes model
+nb_model = GaussianNB()
+nb_model.fit(X_train, Y_train)
+y_pred_nb = nb_model.predict(X_test)
+
+
+
+# Display classification report
+print("\nClassification Report (Naive Bayes):")
+print(classification_report(Y_test, y_pred_nb))
+
+conf_matrix = confusion_matrix(Y_test, y_pred_nb)
+
+
+# Define labels for the confusion matrix
+labels = ['Ham', 'Spam']
+
+# Plot confusion matrix
+plt.figure(figsize=(6,4))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=labels, yticklabels=labels)
+plt.xlabel('Predicted Labels')
+plt.ylabel('True Labels')
+plt.title('Confusion Matrix for Naive Bayes (Email Dataset)')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score,classification_report, confusion_matrix 
